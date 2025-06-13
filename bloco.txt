@@ -1,0 +1,4 @@
+Geral -> tela interia 
+botao de voltar a direita 
+cadastro aluno - mostrar nome social quando for sexo outro
+cadastro professor -> Qualificação abrir a tela de cadastrar as Qualificação

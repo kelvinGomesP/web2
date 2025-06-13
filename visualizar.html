@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Visualizar Registros</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <body>
+  <img src="img/logo.png" alt="Logo IDP" class="logo-superior">
+
+
+  <div class="form-container">
+    <h2>Visualizar Registros</h2>
+
+    <form onsubmit="buscarDados(event)">
+      <div class="campo-duplo">
+        <div class="campo">
+          <label for="tipo">Buscar por:</label>
+          <select id="tipo">
+            <option value="aluno">Aluno</option>
+            <option value="professor">Professor</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="filtro">Nome, CPF ou RA:</label>
+          <input type="text" id="filtro" placeholder="Digite aqui...">
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="curso">Filtrar por Curso (se for aluno):</label>
+        <select id="curso">
+          <option value="">Todos</option>
+          <option value="Ciência da Computação">Ciência da Computação</option>
+          <option value="Engenharia de Software">Engenharia de Software</option>
+          <option value="Sistemas de Informação">Sistemas de Informação</option>
+        </select>
+      </div>
+
+      <div class="botoes-direita">
+        <button type="submit" class="botao">Buscar</button>
+      </div>
+    </form>
+
+    <div id="resultado" class="tabela-scroll">
+      <!-- Tabela aparece aqui -->
+    </div>
+
+    <div class="botoes-direita" style="margin-top: 20px;">
+      <a href="index.html" class="botao-voltar">← Voltar para o Menu</a>
+    </div>
+  </div>
+
+  <script>
+    function buscarDados(event) {
+      event.preventDefault();
+
+      const tipo = document.getElementById('tipo').value;
+      const filtro = document.getElementById('filtro').value.trim().toLowerCase();
+      const cursoFiltro = document.getElementById('curso').value;
+
+      const dadosAlunos = [
+        {
+          nome: 'Maria Silva', nomeSocial: 'Maria S.', cpf: '111.222.333-44', ra: 'A12345',
+          nascimento: '2005-03-10', etnia: 'Branca', opcaoSexual: 'Heterossexual',
+          responsavel: 'João Silva', transferido: 'Sim', pcd: 'Não', curso: 'Ciência da Computação',
+          cep: '70000-000', estado: 'DF', cidade: 'Brasília', logradouro: 'Rua das Flores', complemento: 'Bloco B, Apto 101'
+        },
+        {
+          nome: 'Carlos Oliveira', nomeSocial: '', cpf: '222.333.444-55', ra: 'B67890',
+          nascimento: '2004-09-21', etnia: 'Parda', opcaoSexual: 'Prefiro não informar',
+          responsavel: 'Ana Oliveira', transferido: 'Não', pcd: 'Sim', curso: 'Engenharia de Software',
+          cep: '70100-000', estado: 'DF', cidade: 'Brasília', logradouro: 'Avenida Central', complemento: 'Casa 2'
+        }
+      ];
+
+      const dadosProfessores = [
+        { nome: 'Prof. Ana Clara', cpf: '333.444.555-66', qualificacao: 'Doutora' }
+      ];
+
+      const resultados = tipo === 'aluno'
+        ? dadosAlunos.filter(p =>
+            (p.nome.toLowerCase().includes(filtro) || p.cpf.includes(filtro) || p.ra.includes(filtro)) &&
+            (cursoFiltro === '' || p.curso === cursoFiltro)
+          )
+        : dadosProfessores.filter(p =>
+            p.nome.toLowerCase().includes(filtro) || p.cpf.includes(filtro)
+          );
+
+      const resultadoDiv = document.getElementById('resultado');
+      resultadoDiv.innerHTML = '';
+
+      if (resultados.length === 0) {
+        resultadoDiv.innerHTML = `<p>Nenhum resultado encontrado.</p>`;
+        return;
+      }
+
+      const titulo = document.createElement('h3');
+      titulo.textContent = tipo === 'aluno' ? 'Registros de Alunos' : 'Registros de Professores';
+      resultadoDiv.appendChild(titulo);
+
+      const tabela = document.createElement('table');
+
+      if (tipo === 'aluno') {
+        tabela.innerHTML = `
+          <thead>
+            <tr>
+              <th>Nome</th><th>Nome Social</th><th>CPF</th><th>RA</th><th>Nascimento</th><th>Etnia</th>
+              <th>Opção Sexual</th><th>Responsável</th><th>Transferido</th><th>PCD</th><th>Curso</th>
+              <th>CEP</th><th>Estado</th><th>Cidade</th><th>Logradouro</th><th>Complemento</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${resultados.map(p => `
+              <tr>
+                <td>${p.nome}</td><td>${p.nomeSocial}</td><td>${p.cpf}</td><td>${p.ra}</td><td>${p.nascimento}</td>
+                <td>${p.etnia}</td><td>${p.opcaoSexual}</td><td>${p.responsavel}</td><td>${p.transferido}</td>
+                <td>${p.pcd}</td><td>${p.curso}</td><td>${p.cep}</td><td>${p.estado}</td><td>${p.cidade}</td>
+                <td>${p.logradouro}</td><td>${p.complemento}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        `;
+      } else {
+        tabela.innerHTML = `
+          <thead>
+            <tr><th>Nome</th><th>CPF</th><th>Qualificação</th></tr>
+          </thead>
+          <tbody>
+            ${resultados.map(p => `
+              <tr><td>${p.nome}</td><td>${p.cpf}</td><td>${p.qualificacao}</td></tr>
+            `).join('')}
+          </tbody>
+        `;
+      }
+
+      resultadoDiv.appendChild(tabela);
+    }
+  </script>
+</body>
+</html>
